@@ -128,8 +128,7 @@ module Api
           includes(variants: [:product, :default_price, :stock_items]).
           where(supplier_id: producer_ids).
           by_producer.by_name.
-          ransack(params[:q]).result.
-          page(params[:page]).per(params[:per_page])
+          ransack(params[:q]).result
       end
 
       def render_paged_products(products, product_serializer = ::Api::Admin::ProductSerializer)
