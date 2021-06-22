@@ -70,7 +70,7 @@ module Api
       end
 
       def search_params
-        permitted_search_params = params.slice :q, :page, :per_page
+        permitted_search_params = params.slice :q
 
         if permitted_search_params.key? :q
           permitted_search_params[:q].slice!(*permitted_ransack_params)
