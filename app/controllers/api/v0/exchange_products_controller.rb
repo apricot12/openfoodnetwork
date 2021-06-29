@@ -27,7 +27,7 @@ module Api
 
         render_variant_count && return if params[:action_name] == "variant_count"
 
-        render_paginated_products
+        render_paginated_products paginated_products
       end
 
       private
@@ -51,6 +51,14 @@ module Api
           new(@order_cycle, spree_current_user)
       end
 
+      def paginated_products
+        return products unless pagination_required?
+
+        products.
+          page(params[:page]).
+          per(params[:per_page] || DEFAULT_PER_PAGE)
+      end
+
       def load_data_from_exchange
         exchange = Exchange.find_by(id: exchange_params[:exchange_id])
 
@@ -72,20 +80,16 @@ module Api
         end
       end
 
-      def render_paginated_products
-        results = products
-
-        @pagy, results = pagy(results, items: params[:per_page] || DEFAULT_PER_PAGE) if pagination_required?
-
+      def render_paginated_products(paginated_products)
         serialized_products = ActiveModel::ArraySerializer.new(
-          results,
+          paginated_products,
           each_serializer: Api::Admin::ForOrderCycle::SuppliedProductSerializer,
           order_cycle: @order_cycle
         )
 
         render json: {
           products: serialized_products,
-          pagination: pagination_data
+          pagination: pagination_data(paginated_products)
         }
       end
 

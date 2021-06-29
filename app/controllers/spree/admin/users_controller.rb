@@ -93,8 +93,10 @@ module Spree
             limit(params[:limit] || 100)
         else
           @search = Spree::User.ransack(params[:q])
-          @pagy, @collection = pagy(@search.result, items: Spree::Config[:admin_products_per_page])
-          @collection
+          @collection = @search.
+            result.
+            page(params[:page]).
+            per(Spree::Config[:admin_products_per_page])
         end
       end
 

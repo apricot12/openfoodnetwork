@@ -15,8 +15,7 @@ module Spree
         params[:q] ||= {}
         params[:q][:s] ||= "ascend_by_name"
         @search = super.ransack(params[:q])
-        @pagy, @zones = pagy(@search.result, items: Spree::Config[:orders_per_page])
-        @zones
+        @zones = @search.result.page(params[:page]).per(Spree::Config[:orders_per_page])
       end
 
       def load_data
