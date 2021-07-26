@@ -10,7 +10,9 @@ module Spree
     has_one :enterprise, dependent: :restrict_with_exception
     has_many :shipments
 
-    validates :firstname, :lastname, :address1, :city, :country, presence: true
+    validates :address1, :city, presence: true
+    validates :firstname, :lastname, presence: true, unless: -> { :company.present? }
+    validates :company, presence: true, unless: -> { :firstname.present? || :lastname.present? }
     validates :zipcode, presence: true, if: :require_zipcode?
     validates :phone, presence: true, if: :require_phone?
 
